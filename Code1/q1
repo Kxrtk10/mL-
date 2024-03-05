@@ -1,1 +1,97 @@
+CREATE TABLE 
 
+EMP
+
+create table EMP(
+EMPCODE numeric(3) constraint PK_EMPNO primary key,
+Name varchar2(10),
+Qualification varchar2(7) constraint VALID_QUALIF check(Qualification in ('BTECH','MTECH','MSC','MCA','PHD')),
+Phone numeric(10),
+Email varchar2(20) constraint EMAIL_DOMAIN check(Email like '%@digisol.com'),
+Designation varchar2(20) constraint VALID_DESIGNATION check(Designation in ('DEVELOPER','PROJECT LEADER','PROJECT MANAGER','TECHNICAL HEAD','PROJECT DIRECTOR','CEO')),
+Salary numeric(7) constraint SALARY_RANGE check (Salary between 97000 and 300000));
+
+___________________________________________________________
+
+SKILL
+
+create table SKILL(
+skillid char(3) constraint unq_skillid unique,
+skillname varchar(20) constraint unq_skillname unique);
+___________________________________________________________
+
+CLIENT
+
+create table CLIENT(
+clientid char(3) constraint PK_CLIENTID primary key, constraint STRTSWITH_C check (clientid like 'C%'),
+name varchar2(10),
+phone char(14) constraint PHONE_FORMAT check(phone like '+91-%' or phone like '+81-%' or phone like '+31-%' or phone like '+48-%' or phone like '+44-%'));
+___________________________________________________________
+
+PRJ DETAILS
+
+create table PRJ_DETAILS(
+prjid char(3) constraint PK_PRJID primary key, check (prjid like 'P%'),
+prj_name varchar2(10),
+start_date date,
+end_date date,
+actual_end_date date,
+lead_by_empcode numeric(3) constraint FK_LEAD_EMP references EMP,
+budget_allocated numeric(10,1),
+actual_budget numeric(10,1),
+constraint END_DATE_GREATER_START_DATE check(end_date>start_date),
+check(actual_end_date>=end_date));
+
+___________________________________________________________
+
+EMP SKILL
+
+create table EMP_SKILL(
+empno numeric(3) constraint FK_EMPNO references EMP,
+skillid char(3) constraint FK_SKILLID references SKILL(skillid) on delete cascade,
+skillexperience numeric(3) check(skillexperience>0));
+___________________________________________________________
+
+EXPERIENCE
+
+create table EXPERIENCE(
+empcode numeric(3) constraint FK_EMPCODE references EMP,
+prjid char(3) constraint FK_PRJID references PRJ_DETAILS,
+work_experience numeric(3) constraint NONZERO_WORK_EXPERIENCE check(work_experience>=0),
+clientid char(3) constraint FK_CLIENTID references CLIENT on delete set null,
+rating char(1) constraint VALID_RATING check(rating in('A','B','C')),
+constraint PK_EMPCODE_PRJID primary key(empcode,prjid));
+___________________________________________________________
+
+FAMILY DEPENDENTS
+
+create table FAMILY_DEPENDENTS(
+empno numeric(3) constraint FK_EMPNO2 references EMP,
+dep_name varchar(20),
+relationship varchar(16),
+age numeric(3) constraint VALID_AGE check(age>=1 AND age<=130),
+constraint PK_EMPNO_DEP_NAME primary key(empno,dep_name));
+___________________________________________________________
+
+MEDICAL POLICY
+
+create table MEDICAL_POLICY(
+empno numeric(3) constraint FK_EMPNO3 references EMP,
+policyno varchar2(6) constraint VALID_POLICYNO check(policyno like 'MED%'),
+premium numeric(5) constraint VALID_PREMIUM check(premium>0),
+policydate date,
+constraint PK_EMPNO_POLICYNO primary key(empno,policyno));
+___________________________________________________________
+
+PAY CHECK
+
+create table PAY_CHECK(
+empcode numeric(3) constraint FK_EMPNO4 references EMP,
+paydate date,
+regular_increment numeric(4) constraint VALID_REGU_INCENTIVE check(regular_increment in ('2000','3000','5000','7000','9000')),
+performance_incentive numeric(5),
+da numeric(7),
+pf numeric(6),
+other_incentives numeric(4),
+advance_tax numeric(5),
+constraint PK_EMPCODE_PAYDATE primary key(empcode,paydate));
