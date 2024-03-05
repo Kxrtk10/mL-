@@ -1,0 +1,429 @@
+4.1 Retrieve all Clients information
+
+SQL> select * from CLIENT;
+
+CLI NAME       PHONE          EMAIL                                             
+--- ---------- -------------- ---------------                                   
+C2  LTS        +91-7838939723 bbb@lts.com                                       
+C3  RK         +44-6783893456 ccc@rk.com                                        
+C4  MMA        +31-7783909389 ddd@mma.com                                       
+C5  AKS        +81-6682290345 eee@aks.com                                       
+C6  GKS        +81-7562898266 fff@gks.com                                       
+C7  BB         +91-6483983998 ggg@bb.com                                        
+C8  ABT        +48-6755466710 hhh@abt.com                                       
+C9  XYZ        +91-1254698700 xyz@ab.com                                        
+C10 VCS        +91-9865451252 rrr@vcs.com                                       
+
+9 rows selected.
+
+_____________________________________________________
+
+4.2 Display name, phone and email of employees having designation DEVELOPER.
+
+SQL> select name, phone, email from EMP where designation='DEVELOPER';
+
+NAME            PHONE EMAIL                                                     
+---------- ---------- --------------------                                      
+MANISH     6325415285 manish@digisol.com                                        
+RAJESH     4521362545 rajesh@digisol.com                                        
+RAKESH     1231231230 rakesh2@digisol.com                                       
+ARJUN      6545654589 arjun@digisol.com                                         
+RIYA       4785693215 riya@digisol.com                                          
+_____________________________________________________
+
+4.3 Display name of employees who are working under employee with code 106.
+
+
+SQL> select name from EMP where reports_to=106;
+
+NAME                                                                            
+----------                                                                      
+MANISH                                                                          
+BHASKAR                                                                         
+AJAY                                                                            
+RAKESH                                                                          
+RAJ                                                                             
+_____________________________________________________
+
+4.4 Display name and email id of employees working as TECHNICAL HEAD and Designation BTECH.
+
+SQL> select name, email from EMP where designation='TECHNICAL HEAD' and qualification='BTECH';
+
+NAME       EMAIL                                                                
+---------- --------------------                                                 
+AJAY       ajay@digisol.com                                                     
+AMAN       aman@digisol.com
+_____________________________________________________
+
+4.5 Find name of employees who is drawing salary in the range 100000 to 200000.
+
+SQL> select name from EMP where salary between 100000 and 200000;
+
+NAME                                                                            
+----------                                                                      
+BHASKAR                                                                         
+VIJAY                                                                           
+RAVI                                                                            
+AJAY                                                                            
+RAJ                                                                             
+RAKESH                                                                          
+ARJUN                                                                           
+AMAN                                                                            
+RIYA                                                                            
+
+9 rows selected.
+
+SQL> select name from EMP where salary>=100000 and salary<=200000;
+
+NAME                                                                            
+----------                                                                      
+BHASKAR                                                                         
+VIJAY                                                                           
+RAVI                                                                            
+AJAY                                                                            
+RAJ                                                                             
+RAKESH                                                                          
+ARJUN                                                                           
+AMAN                                                                            
+RIYA                                                                            
+
+9 rows selected.
+
+_____________________________________________________
+
+4.6 List the Skills owned by the employee with Employee number 101.
+
+SQL> select skillid from EMP_SKILL where empno=101;
+
+SKI                                                                             
+---                                                                             
+S1                                                                              
+S2                                                                              
+S3
+
+_____________________________________________________
+
+4.7 Display the name of skills that employee with emp code 101 is having.
+
+SQL> select skillid, skillname from EMP_SKILL natural join SKILL where empno=101;
+
+SKI SKILLNAME                                                                   
+--- --------------------                                                        
+S1  Full stack                                                                  
+S2  Python                                                                      
+S3  Java 
+_____________________________________________________
+
+4.8 Retrieve Employee code of employees who worked with clients C1 or C2 and having rating either A or 
+B
+
+
+SQL> select EMPCODE from EXPERIENCE where CLIENTID='C1' or CLIENTID='C2' and RATING='A' or RATING='B';
+
+   EMPCODE                                                                      
+----------                                                                      
+       102                                                                      
+       105                                                                      
+       110                                                                      
+       111 
+
+_____________________________________________________
+
+4.9 Display the name of Employees who worked with client C2 and having Rating B.
+
+SQL> select name from EMP natural join EXPERIENCE where CLIENTID='C2' and RATING='B';
+
+NAME                                                                            
+----------                                                                      
+MANISH                                                                          
+VIJAY  
+_____________________________________________________
+
+4.10 List How many dependents an employee RAVI is having?
+
+SQL> select dep_name,relationship from FAMILY_DEPENDENTS natural join EMP where emp.name='RAVI';
+
+DEP_NAME             RELATIONSHIP                                               
+-------------------- ----------------                                           
+Ajith                Son                                                        
+Prithvi              Daughter                                                   
+Aarya                Daughter                                                   
+Akanksh              Son                                                        
+Anitha               Spouse                                                     
+Riya                 Daughter                                                   
+
+6 rows selected.
+_____________________________________________________
+
+4.11 Retrieve employee name, Designation and Total annual salary (Salary*12) and rename the column as 
+Annual_Salary. (using join)
+
+SQL> select name, designation, salary*12 as Annual_Salary from EMP;
+
+NAME       DESIGNATION          ANNUAL_SALARY                                   
+---------- -------------------- -------------                                   
+PRSAD      CEO                        3588000                                   
+MANISH     DEVELOPER                  1187760                                   
+BHASKAR    PROJECT DIRECTOR           2400000                                   
+VIJAY      PROJECT MANAGER            1800000                                   
+RAVI       PROJECT LEADER             1800000                                   
+AJAY       TECHNICAL HEAD             1380000                                   
+RAJESH     DEVELOPER                  1199880                                   
+RAJ        PROJECT LEADER             1440000                                   
+RAKESH     PROJECT DIRECTOR           3000000                                   
+RAKESH     DEVELOPER                  1212000                                   
+ARJUN      DEVELOPER                  1212000                                   
+
+NAME       DESIGNATION          ANNUAL_SALARY                                   
+---------- -------------------- -------------                                   
+AMAN       TECHNICAL HEAD             1272000                                   
+RAJ        PROJECT DIRECTOR           2712000                                   
+RIYA       DEVELOPER                  1539240                                   
+
+14 rows selected.
+
+_____________________________________________________
+
+4.12 List name of all employees and their dependents name if exist otherwise null.
+
+SQL> select emp.name,family_dependents.dep_name from emp left join family_dependents on emp.empcode=family_dependents.empno;
+
+NAME       DEP_NAME                                                             
+---------- --------------------                                                 
+RAJESH     Ajith                                                                
+RAJESH     Prithvi                                                              
+RAVI       Anitha                                                               
+RAVI       Akanksh                                                              
+RAVI       Riya                                                                 
+RAVI       Aarya                                                                
+VIJAY                                                                           
+RAJ                                                                             
+RAKESH                                                                          
+MANISH                                                                          
+PRSAD                                                                           
+
+NAME       DEP_NAME                                                             
+---------- --------------------                                                 
+RAKESH                                                                          
+AJAY                                                                            
+ARJUN                                                                           
+BHASKAR                                                                         
+RAJ                                                                             
+AMAN                                                                            
+RIYA                                                                            
+
+18 rows selected.
+_____________________________________________________
+
+4.13 List the project leader name and name of projects which have completed without time slippage and 
+budget slippage.
+
+SQL> select name, prj_name from prj_details natural join emp where prj_details.lead_by_empcode=emp.empcode and actual_end_date<=end_date and actual_budget<budget_allocated;
+
+NAME       PRJ_NAME                                                             
+---------- ----------                                                           
+MANISH     HORIZON                                                              
+AJAY       ECLIPSE 
+_____________________________________________________
+
+4.14 Display employee name, Salary and pay check details corresponding to month -March.
+
+SQL> select name, salary, regular_increment, other_incentives, advance_tax from PAY_CHECK natural join EMP where paydate like ('%-MAR-%');
+
+NAME           SALARY REGULAR_INCREMENT OTHER_INCENTIVES ADVANCE_TAX            
+---------- ---------- ----------------- ---------------- -----------            
+MANISH          98980              3000             2700        7000            
+RAVI           150000              3000             2600        3000    
+
+_____________________________________________________
+
+4.15 Find the Employee name and his higher authority name, phone to who the employee reports.
+
+SQL> select e1.name as Employee, e2.name as Higher_Authority, e2.phone from emp e1 join emp e2 on e1.reports_to=e2.empcode;
+
+EMPLOYEE   HIGHER_AUT      PHONE                                                
+---------- ---------- ----------                                                
+RAJESH     RAVI       9876532104                                                
+ARJUN      RAVI       9876532104                                                
+RAKESH     RAVI       9876532104                                                
+RAVI       VIJAY      9874563210                                                
+AMAN       VIJAY      9874563210                                                
+RIYA       VIJAY      9874563210                                                
+AJAY       PRSAD      7964512351                                                
+RAKESH     PRSAD      7964512351                                                
+MANISH     PRSAD      7964512351                                                
+BHASKAR    PRSAD      7964512351                                                
+RAJ        PRSAD      7964512351                                                
+
+EMPLOYEE   HIGHER_AUT      PHONE                                                
+---------- ---------- ----------                                                
+VIJAY      BHASKAR    3625145698                                                
+RAJ        BHASKAR    3625145698                                                
+
+13 rows selected.
+
+_____________________________________________________
+
+4.16. Display the project details in the descending order of their actual closing date.
+
+SQL> select prj_name from prj_details order by actual_end_date desc;
+
+PRJ_NAME                                                                        
+----------                                                                      
+ECLIPSE                                                                         
+UNICORN                                                                         
+HORIZON                                                                         
+xxx                                                                             
+MARS                                                                            
+NEPTUNE                                                                         
+SATURN                                                                          
+ZEUS                                                                            
+APOLLO                                                                          
+SPYDER                                                                          
+JUPITOR                                                                         
+
+11 rows selected.
+_____________________________________________________
+
+4.17 Display Employee names, skill name in ascending order of employee number and descending order 
+of their skill experience.
+
+SQL> select emp_skill.empno,emp.name, skill.skillname,emp_skill.skillexperience from emp_skill join emp on emp_skill.empno=emp.empcode join skill on emp_skill.skillid=skill.skillid order by empno asc, emp_skill.skillexperience desc;
+
+     EMPNO NAME       SKILLNAME            SKILLEXPERIENCE                      
+---------- ---------- -------------------- ---------------                      
+       100 RAJESH     Full stack                        15                      
+       100 RAJESH     Java                              10                      
+       101 RAVI       Python                            10                      
+       101 RAVI       Java                               7                      
+       101 RAVI       Full stack                         6                      
+       102 VIJAY      C++                               18                      
+       105 MANISH     Android                           12                      
+       105 MANISH     IOS                               11                      
+       105 MANISH     Java                              11                      
+       106 PRSAD      Oracle                            12                      
+       106 PRSAD      AZURE                             10                      
+
+     EMPNO NAME       SKILLNAME            SKILLEXPERIENCE                      
+---------- ---------- -------------------- ---------------                      
+       106 PRSAD      Python                            10                      
+       108 AJAY       Oracle                            18                      
+       108 AJAY       DOT NET                            5                      
+       110 BHASKAR    Oracle                            20                      
+       110 BHASKAR    Full stack                        14                      
+
+16 rows selected
+_____________________________________________________
+
+4.18 Display Employee name, dependent name, age where the relationship is SON and sort employee 
+name in ascending and age in descending order.
+
+SQL> select emp.name, family_dependents.dep_name,family_dependents.age from family_dependents join emp on family_dependents.empno=emp.empcode where relationship='Son' order by emp.name asc, family_dependents.age desc;
+
+NAME       DEP_NAME                    AGE                                      
+---------- -------------------- ----------                                      
+RAJESH     Ajith                        12                                      
+RAVI       Akanksh                      11 
+_____________________________________________________
+
+4.19 Retrieve Employee names in Ascending order and Project names in descending order in which 
+employees have worked.
+
+SQL> select emp.name, prj_name from prj_details join emp on lead_by_empcode=emp.empcode order by emp.name asc, prj_name desc;
+
+NAME       PRJ_NAME                                                             
+---------- ----------                                                           
+AJAY       ECLIPSE                                                              
+AJAY       APOLLO                                                               
+BHASKAR    xxx                                                                  
+BHASKAR    ZEUS                                                                 
+BHASKAR    SATURN                                                               
+BHASKAR    NEPTUNE                                                              
+BHASKAR    MARS                                                                 
+BHASKAR    JUPITOR                                                              
+MANISH     HORIZON                                                              
+PRSAD      UNICORN                                                              
+VIJAY      SPYDER                                                               
+
+11 rows selected.
+
+_____________________________________________________
+
+4.20. Find name of employees who have worked in SPYDER or APOLLO (use set Operator)
+
+SQL> select emp.name, prj_name from prj_details join emp on lead_by_empcode=emp.empcode where prj_name='SPYDER' union select emp.name, prj_name from prj_details join emp on lead_by_empcode=emp.empcode where prj_name='APOLLO';
+
+NAME       PRJ_NAME                                                             
+---------- ----------                                                           
+AJAY       APOLLO                                                               
+VIJAY      SPYDER 
+_____________________________________________________
+
+4.21 Find the name of employees who are having both skills Oracle & AZURE (use set Operator)
+
+SQL> SELECT emp.name FROM emp JOIN emp_skill ON emp.empcode = emp_skill.empno JOIN skill ON emp_skill.skillid = skill.skillid WHERE skill.skillname = 'Oracle' intersect SELECT emp.name FROM emp JOIN emp_skill ON emp.empcode = emp_skill.empno JOIN skill ON emp_skill.skillid = skill.skillid WHERE skill.skillname = 'AZURE';
+
+NAME                                                                            
+----------                                                                      
+PRSAD    
+_____________________________________________________
+
+4.22 Retrieve the name of employees who do not work in project JUPITOR (use set Operator)
+
+SQL> select emp.name from prj_details join emp on lead_by_empcode=emp.empcode MINUS select emp.name from prj_details join emp on lead_by_empcode=emp.empcode where prj_name='JUPITOR';
+
+NAME                                                                            
+----------                                                                      
+AJAY                                                                            
+MANISH                                                                          
+PRSAD                                                                           
+VIJAY  
+_____________________________________________________
+
+4.23 Display the name of employee who reports to none.
+
+SQL> select name from emp where reports_to is null;
+
+NAME                                                                            
+----------                                                                      
+PRSAD                                                                           
+_____________________________________________________
+
+4.24 Display all employee names, email whose name starts with RA.
+
+SQL> select name,email from emp where name like 'RA%';
+
+NAME       EMAIL                                                                
+---------- --------------------                                                 
+RAVI       ravi@digisol.com                                                     
+RAJESH     rajesh@digisol.com                                                   
+RAJ        raJ@digisol.com                                                      
+RAKESH     rakesh@digisol.com                                                   
+RAKESH     rakesh2@digisol.com                                                  
+RAJ        raj@digisol.com                                                      
+
+6 rows selected.
+_____________________________________________________
+
+4.25 Retrieve the name of projects which are started between 01-01-2020 to 41-12-2020.
+
+SQL> select prj_name from prj_details where start_date>=to_date('01-01-2020','DD-MM-YYYY') and start_date<=to_date('31-12-2020','DD-MM-YYYY');
+
+PRJ_NAME                                                                        
+----------                                                                      
+SPYDER                                                                          
+ZEUS                                                                            
+_____________________________________________________
+
+4.26 Display the name of employees who has at least few skills that employee with employee number 
+101 is having.
+
+SQL> SELECT emp.name,emp_skill.skillid FROM emp JOIN emp_skill ON emp.empcode = emp_skill.empno where emp_skill.skillid in(select skillid from emp_skill where empno=101) and empno !=101;
+
+NAME       SKI                                                                  
+---------- ---                                                                  
+RAJESH     S1                                                                   
+RAJESH     S3                                                                   
+MANISH     S3                                                                   
+PRSAD      S2                                                                   
+BHASKAR    S1 
